@@ -6,7 +6,7 @@ If you have a React Native mobile UI and would like to call a library method wri
 
 Although there are amazing tools to help streamline the above, the user is still required to do a lot of manual gluing together. Even with all the effort put into it, every language crossed introduces restrictions and performance penalties. At some point, the whole system becomes too brittle to maintain.
 
-The `ghostbridge` project aims to establish direct communication between the frontend and the backend, omitting all the intermediate languages, hooking React Native straight into Go.
+The `ghostbridge` project aims to establish direct communication between the frontend and the app logic, omitting all the intermediate languages, hooking React Native straight into Go.
 
 *Note, this project is not a silver bullet, it may be overkill or inappropriate for your use case. Before diving in, please consider the rationale behind the creation of `ghostbridge`.*
 
@@ -29,7 +29,7 @@ As mentioned above, a React Native app is a website. It might have lots of bells
 
 This is an interesting edge: since most React Native applications access data from remote servers via HTTP, its implementation is both highly optimized and fairly flexible. Furthermore, since most developers rely on RESTful APIs and CDNs for their remote services, the React Native component ecosystem also evolved around HTTP.
 
-Instead of fighting React Native's mental model, we can embrace it. Instead of exposing a Go library across 4 languages (losing any hope of sanity), we can convert our library into an HTTP micro-service running on the device itself! Go excels as HTTP anyway, so this seems like a no-brainer.
+Instead of fighting React Native's mental model, we can embrace it. Instead of exposing a Go library across 4 languages (losing any hope of sanity), we can convert our library into an HTTP micro-service running on the device itself! Go excels at HTTP anyway, so this seems like a no-brainer.
 
 Of course, I didn't invent the wheel here. Many developers implemented such a communication model before, yet it never really got popular. Turns out, this seemingly simple idea has some painful security implications:
 
@@ -46,7 +46,7 @@ There are three individual problems that we must solve:
  - The Go library must ensure it's talking to the correct UI before exchanging any sensitive data.
  - Both endpoints must establish an encrypted stream before exchanging any sensitive data.
 
-This problem is already solved with real-world services: TLS certificates and API tokens. With an HTTP service running on `localhost` however, things beak:
+This problem is already solved with real-world services: TLS certificates and API tokens. With an HTTP service running on `localhost` however, things break:
 
  - If you ship a certificate within your app, that authenticates `localhost`, anyone can extract it and impersonate you, since your service is sharing the `localhost` domain with every other app.
  - Without a certificate, we're out of luck. HTTP was designed around this form of security. If we want to use HTTP, we need to play by its rules.
